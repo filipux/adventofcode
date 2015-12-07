@@ -1,0 +1,11 @@
+<script src="https://blueimp.github.io/JavaScript-MD5/js/md5.js"></script>
+<script>
+function day4(zeros){
+   for(i=0;;i++){
+      if(parseInt(md5("iwrupvqb"+i).substring(0,zeros),16) === 0) return i;
+   }
+}
+console.log("4a: "+day4(5));
+console.log("4a: "+day4(6));
+
+</script>
