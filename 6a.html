@@ -309,16 +309,17 @@
    
    for(i = 0;i<list.length;i++){
       var p = parse(list[i]);      
-      for(x=p.pos[0];x<=p.pos[2];x++)
-      for(y=p.pos[1];y<=p.pos[3];y++){
-         grid[x] = grid[x] || [];
-         var oldValue = grid[x][y] = grid[x][y] || 0;            
-         switch(p.command){
-               case "turn on":   grid[x][y] = 1; break;
-               case "turn off":  grid[x][y] = 0; break;
-               case "toggle":    grid[x][y] ^= 1; break;
-         }         
-         count += grid[x][y]-oldValue;
+      for(x=p.pos[0];x<=p.pos[2];x++){
+          for(y=p.pos[1];y<=p.pos[3];y++){
+             grid[x] = grid[x] || [];
+             var oldValue = grid[x][y] = grid[x][y] || 0;            
+             switch(p.command){
+                   case "turn on":   grid[x][y] = 1; break;
+                   case "turn off":  grid[x][y] = 0; break;
+                   case "toggle":    grid[x][y] ^= 1; break;
+             }         
+             count += grid[x][y]-oldValue;
+          }
       }
    }
    
