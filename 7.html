@@ -343,7 +343,7 @@
    // --------------------------------------------------------------------------
 
    function createNode(name){
-      return graph[name] || (graph[name] = (isNaN(+name)?{}:{value:+name}));
+      return graph[name] || (graph[name] = {value:isNaN(+name)?undefined:+name});
    }
 
    function parse(s){
