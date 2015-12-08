@@ -343,7 +343,7 @@
    // --------------------------------------------------------------------------
 
    function createNode(name){
-      return graph[name] || (graph[name] = {value:+name});
+      return graph[name] || (graph[name] = (isNaN(+name)?{}:{value:+name}));
    }
 
    function parse(s){
@@ -366,8 +366,8 @@
    }
 
    function evaluate(node){
-      if(node === undefined) return NaN;   
-      if(!isNaN(node.value)) return node.value;
+      if(node === undefined) return undefined;   
+      if(node.value !== undefined) return node.value;
       return node.value = compute(node, evaluate(node.in1), evaluate(node.in2));
    }
 
