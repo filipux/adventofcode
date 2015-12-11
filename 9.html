@@ -1,0 +1,92 @@
+<div id="data">Tristram to AlphaCentauri = 34
+Tristram to Snowdin = 100
+Tristram to Tambi = 63
+Tristram to Faerun = 108
+Tristram to Norrath = 111
+Tristram to Straylight = 89
+Tristram to Arbre = 132
+AlphaCentauri to Snowdin = 4
+AlphaCentauri to Tambi = 79
+AlphaCentauri to Faerun = 44
+AlphaCentauri to Norrath = 147
+AlphaCentauri to Straylight = 133
+AlphaCentauri to Arbre = 74
+Snowdin to Tambi = 105
+Snowdin to Faerun = 95
+Snowdin to Norrath = 48
+Snowdin to Straylight = 88
+Snowdin to Arbre = 7
+Tambi to Faerun = 68
+Tambi to Norrath = 134
+Tambi to Straylight = 107
+Tambi to Arbre = 40
+Faerun to Norrath = 11
+Faerun to Straylight = 66
+Faerun to Arbre = 144
+Norrath to Straylight = 115
+Norrath to Arbre = 135
+Straylight to Arbre = 127</div>
+<script src="GeneticJavascript/Genetic.js"></script>
+<script src="GeneticJavascript/Genetic.Chromosome.js"></script>
+<script src="GeneticJavascript/Genetic.BaseGene.js"></script>
+<script src="GeneticJavascript/Genetic.Integer.js"></script>
+<script src="GeneticJavascript/Genetic.Float.js"></script>
+
+<script>
+   // Parse input
+   function parse(total, s) {
+      var a = s.match(/(\w+) to (\w+) = (\d+)/);
+      total[a[1]] = total[a[1]] || {};
+      total[a[2]] = total[a[2]] || {};
+      total[a[1]][a[2]] = total[a[2]][a[1]] = a[3];
+      return total;
+   }
+   var cities = document.getElementById('data').innerHTML.split('\n').reduce(parse, {});
+
+   // Build genome
+   var genome = {};
+   for (city in cities) {
+      if (cities.hasOwnProperty(city)) {
+         genome[city] = new Genetic.Integer(0, 5 * 10);
+      }
+   }
+
+   // Setup fitness function
+   function fitness(dna) {
+
+      function getRouteLength(citiesArray) {
+         var dist = 0;
+         for (var i = 0; i < citiesArray.length - 1; i++) {
+            var from = citiesArray[i].city;
+            var to = citiesArray[i + 1].city;
+            dist += Number(cities[from][to]);
+         }
+         return dist;
+      }
+
+      var a = [];
+      for (city in dna) {
+         if (dna.hasOwnProperty(city)) {
+            a.push({
+               city: city,
+               value: dna[city]
+            });
+         }
+      }
+      
+      a.sort(function (a, b) {return a.value - b.value});
+
+      return getRouteLength(a);
+   }
+
+   //Setup genetic algorithm
+   var genetic = new Genetic(genome, fitness);
+   genetic.generations = 1000;
+
+   // Solve
+   var result = genetic.minimize();
+   console.log("Shortest", result, fitness(result));
+
+   result = genetic.maximize();
+   console.log("Longest", result, fitness(result));
+</script>

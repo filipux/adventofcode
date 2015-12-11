@@ -1,0 +1,56 @@
+<script>
+
+   function blacklist(s) {
+      return s.search(/(i|o|l)/) < 0;
+   }
+
+   function doublechars(s) {
+      var a =  s.match(/(.)\1/g);
+      return (a && a.length >= 2);
+   }
+   
+   function straight(s) {
+      for(var i=0;i<s.length-3;i++){
+         var c1 = s[i].charCodeAt();
+         var c2 = s[i+1].charCodeAt()-1;
+         var c3 = s[i+2].charCodeAt()-2;
+         if(c1 == c2 && c2 == c3){
+            return true;
+         }         
+      }  
+      return false;
+   }
+
+  
+   function increment(s){
+     var resultArray = s.split('');    
+     for(var i=s.length-1;i>=0;i--){
+        if(s[i] == "z"){
+           resultArray[i] = "a";           
+        }
+        else {           
+           resultArray[i] = String.fromCharCode(s[i].charCodeAt(0) + 1);           
+           return resultArray.join('');
+        }
+     }                              
+   }
+   
+   function isNice(password){
+      return blacklist(password) && doublechars(password) && straight(password);
+      
+   }
+
+   function next(password){
+      do{
+         password = increment(password);
+      } while(!isNice(password));           
+      return password;
+   }
+   
+   var password = next("vzbxkghb");
+   console.log("Next password:",password);
+   
+   password = next(password);
+   console.log("Next password (again):",password);
+  
+</script>

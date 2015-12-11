@@ -1,0 +1,18 @@
+<script>
+
+   function next(s){
+      return s.match(/(\d)\1*/g).reduce(function(a, b){return a + b.length + b[0]}, "");
+   }
+   
+   function day10(count){
+      var s = "1321131112";
+      for(i=0;i<count;i++){
+         s = next(s);
+      }
+      return s.length;
+   }
+
+   console.log("40x", day10(40));
+   console.log("50x", day10(50));
+   
+</script>
