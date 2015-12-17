@@ -1,0 +1,49 @@
+<div id="data">Dancer can fly 27 km/s for 5 seconds, but then must rest for 132 seconds.
+Cupid can fly 22 km/s for 2 seconds, but then must rest for 41 seconds.
+Rudolph can fly 11 km/s for 5 seconds, but then must rest for 48 seconds.
+Donner can fly 28 km/s for 5 seconds, but then must rest for 134 seconds.
+Dasher can fly 4 km/s for 16 seconds, but then must rest for 55 seconds.
+Blitzen can fly 14 km/s for 3 seconds, but then must rest for 38 seconds.
+Prancer can fly 3 km/s for 21 seconds, but then must rest for 40 seconds.
+Comet can fly 18 km/s for 6 seconds, but then must rest for 103 seconds.
+Vixen can fly 18 km/s for 5 seconds, but then must rest for 84 seconds.</div>
+<script>
+   
+
+   function parse(s) {
+      var a = s.match(/(\w+) can fly (\d+) km\/s for (\d+) seconds, but then must rest for (\d+) seconds./);
+      return {name:a[1], speed:Number(a[2]), duration:Number(a[3]), rest:Number(a[4]), points:0};
+   }
+   
+   function getCycleDistance(reindeer, delta){
+      return Math.min(delta, reindeer.duration) * reindeer.speed;      
+   }
+   
+   function getDistance(reindeer, time){
+      var cycleTime = reindeer.duration + reindeer.rest;
+      var wholeCycles = Math.floor(time / cycleTime);
+      var restCycle = time - wholeCycles * cycleTime;      
+      return wholeCycles * getCycleDistance(reindeer, cycleTime) + getCycleDistance(reindeer, restCycle);      
+   }
+
+   var magicNumber = 2503;
+   var reindeers = document.getElementById('data').innerHTML.split('\n').map(parse);
+   reindeers.map(function(reindeer){
+         console.log(reindeer.name, getDistance(reindeer, magicNumber));
+   });
+   
+   for(var i=1;i<=magicNumber;i++){
+      reindeers.map(function(reindeer){reindeer.distance = getDistance(reindeer, i)});
+      var furthestDistance = reindeers.sort(function(a,b){return b.distance-a.distance})[0].distance;
+      var allFurthestReindeers = reindeers.filter(function(reindeer){return reindeer.distance === furthestDistance});
+      allFurthestReindeers.map(function(a){a.points = a.points + 1});
+   }
+   
+   reindeers.map(function(reindeer){
+         console.log("Problem 2:",reindeer.name, reindeer.points);
+   });
+   
+  
+
+
+</script>

@@ -1,0 +1,81 @@
+<div id="data">Frosting: capacity 4, durability -2, flavor 0, texture 0, calories 5
+Candy: capacity 0, durability 5, flavor -1, texture 0, calories 8
+Butterscotch: capacity -1, durability 0, flavor 5, texture 0, calories 6
+Sugar: capacity 0, durability 0, flavor -2, texture 2, calories 1</div>
+  <script>
+   var props = ['capacity', 'durability', 'flavor', 'texture'];
+     
+   function parse(s) {
+      var a = s.match(/(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)/);
+      var result = {
+         name: a[1],
+         capacity: Number(a[2]),
+         durability: Number(a[3]),
+         flavor: Number(a[4]),
+         texture: Number(a[5]),
+         calories: Number(a[6])
+      };
+      return result;
+   }
+     
+   function getCombinations(sum, buckets, callback){
+      function nextBucket(ar, total){
+         if(ar.length >= buckets){
+            callback(ar);
+            return;
+         } 
+         for(var x=0;x<sum;x++){
+            if(total + x <= sum){
+               ar.push(x);
+               nextBucket(ar, total + x)
+               ar.pop();
+            } else return;
+         }
+      }
+      nextBucket([], 0);
+   }
+
+   function getScore(foods, teaspoons) {
+      // Create empty total object
+      var total = props.reduce((prev, curr) => {prev[curr] = 0; return prev;}, {});
+      
+      // Calculate individual total ingredient score
+      foods.map((food, index) => props.map((prop) => total[prop] += food[prop] * teaspoons[index]));
+      
+      // Calculate final score
+      var score = props.reduce((prev,curr) => prev * Math.max(0, total[curr]), 1);
+
+      return score;
+   }
+
+   
+   var foods = document.getElementById('data').innerHTML.split('\n').map(parse);
+   var best = {teaspoons : null, score :0};
+   var best2 = {teaspoons : null, score :0};
+   var count = 0;
+     
+   function getCalories(foods, teaspoons){
+      return foods.reduce((total, food, index) => {return total + food.calories * teaspoons[index]},0);
+   }  
+ 
+     
+   getCombinations(100, foods.length, (teaspoons) => {
+      var score = getScore(foods, teaspoons);
+      if(best.score < score){
+         best.score = score;
+         best.teaspoons = teaspoons.slice();
+      }
+      var calories = getCalories(foods, teaspoons);
+      if(best2.score < score && calories === 500){
+         best2.score = score;
+         best2.teaspoons = teaspoons.slice();
+      }
+      
+      if(++count % 100000 === 0){
+         console.log(best.score);
+      }
+   });
+  console.log("Final score:", best);
+  console.log("Best 500 cal cookie:", best2);
+  
+</script>
